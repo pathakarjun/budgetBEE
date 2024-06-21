@@ -1,0 +1,20 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="32" fill="#FFD700"/>
+  <!-- Bee body -->
+  <ellipse cx="32" cy="38" rx="10" ry="16" fill="#000"/>
+  <!-- Bee stripes -->
+  <rect x="24" y="30" width="16" height="4" fill="#FFD700"/>
+  <rect x="24" y="38" width="16" height="4" fill="#FFD700"/>
+  <rect x="24" y="46" width="16" height="4" fill="#FFD700"/>
+  <!-- Bee wings -->
+  <ellipse cx="22" cy="24" rx="8" ry="12" fill="#fff" stroke="#000" stroke-width="2"/>
+  <ellipse cx="42" cy="24" rx="8" ry="12" fill="#fff" stroke="#000" stroke-width="2"/>
+  <!-- Bee antennae -->
+  <line x1="28" y1="8" x2="22" y2="2" stroke="#000" stroke-width="2"/>
+  <line x1="36" y1="8" x2="42" y2="2" stroke="#000" stroke-width="2"/>
+  <!-- Bee face -->
+  <circle cx="30" cy="16" r="2" fill="#000"/>
+  <circle cx="34" cy="16" r="2" fill="#000"/>
+  <path d="M30 20 Q32 22, 34 20" stroke="#000" stroke-width="2" fill="none"/>
+</svg>
