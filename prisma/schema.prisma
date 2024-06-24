@@ -14,13 +14,44 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model User {
-  id         Int      @id @default(autoincrement())
-  first_name String
-  last_name  String
-  email      String   @unique
-  username   String   @unique
-  password   String
-  create_dt  DateTime @default(now())
-  update_dt  DateTime @updatedAt
+model users {
+  id                         String                        @id @default(uuid())
+  first_name                 String
+  last_name                  String
+  email                      String                        @unique
+  username                   String                        @unique
+  password                   String
+  create_dt                  DateTime                      @default(now())
+  update_dt                  DateTime                      @updatedAt
+  transaction_classification transaction_classifications[]
+  transaction                transactions[]
+
+  @@index([username])
+}
+
+model transaction_classifications {
+  id                  String         @id @unique @default(uuid())
+  transaction_type    String
+  transaction_subtype String
+  user_id             String
+  create_dt           DateTime       @default(now())
+  update_dt           DateTime       @updatedAt
+  user                users          @relation(fields: [user_id], references: [id])
+  transaction         transactions[]
+
+  @@unique([user_id, transaction_type, transaction_subtype])
+}
+
+model transactions {
+  id                           String                      @id @unique @default(uuid())
+  description                  String
+  transaction_type             String
+  transaction_subtype          String
+  amount                       Float
+  user_id                      String
+  transaction_classificationId String
+  create_dt                    DateTime                    @default(now())
+  update_dt                    DateTime                    @updatedAt
+  user                         users                       @relation(fields: [user_id], references: [id])
+  transaction_classification   transaction_classifications @relation(fields: [transaction_classificationId], references: [id])
 }
