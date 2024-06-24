@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 type propsType = {
   typeValue: String;
@@ -46,14 +47,17 @@ const AddClassificationForm = (props: propsType) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(submitData)}>
+      <form
+        onSubmit={form.handleSubmit(submitData)}
+        className="grid gap-6 py-3"
+      >
         <FormField
           control={form.control}
           name="type"
           render={({ field }) => {
             return (
-              <FormItem>
-                <FormLabel>Type</FormLabel>
+              <FormItem className="grid grid-cols-3 items-center gap-x-8">
+                <FormLabel className="text-right">Type</FormLabel>
                 <FormControl>
                   <Select
                     defaultValue={
@@ -75,7 +79,7 @@ const AddClassificationForm = (props: propsType) => {
                     </SelectContent>
                   </Select>
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="col-start-2 col-span-2" />
               </FormItem>
             );
           }}
@@ -85,16 +89,26 @@ const AddClassificationForm = (props: propsType) => {
           name="classification"
           render={({ field }) => {
             return (
-              <FormItem>
-                <FormLabel>Classification</FormLabel>
+              <FormItem className="grid grid-cols-3 items-center gap-x-8">
+                <FormLabel className="text-right">Classification</FormLabel>
                 <FormControl>
-                  <Input type="text" autoFocus {...field} />
+                  <Input
+                    type="text"
+                    autoFocus
+                    className="col-span-2"
+                    {...field}
+                  />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="col-start-2 col-span-2" />
               </FormItem>
             );
           }}
         />
+        <div className="grid grid-cols-3 items-center gap-4">
+          <Button type="submit" className="col-start-3">
+            Add
+          </Button>
+        </div>
       </form>
     </Form>
   );

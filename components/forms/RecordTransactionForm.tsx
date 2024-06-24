@@ -81,9 +81,6 @@ const RecordTransactionForm = () => {
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <AddClassificationForm typeValue={form.getValues("type")} />
-          <DialogFooter>
-            <Button type="submit">Add</Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
       <Form {...form}>
@@ -178,6 +175,7 @@ const RecordTransactionForm = () => {
                         variant="outline"
                         role="combobox"
                         className={cn(!field.value && "text-muted-foreground")}
+                        disabled={form.getValues("type") ? false : true}
                       >
                         {field.value
                           ? classifications.find(
