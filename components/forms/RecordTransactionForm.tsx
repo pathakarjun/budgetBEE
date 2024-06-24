@@ -34,15 +34,7 @@ import {
   DialogFooter,
   DialogHeader,
 } from "../ui/dialog";
-import { Label } from "../ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import AddClassificationForm from "./addClassificationForm";
+import AddClassificationForm from "./AddClassificationForm";
 
 const types = [
   { label: "Income", value: "in" },
