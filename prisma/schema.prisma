@@ -47,6 +47,7 @@ model transactions {
   description                  String
   transaction_type             String
   transaction_subtype          String
+  transaction_date             DateTime
   amount                       Float
   user_id                      String
   transaction_classificationId String
