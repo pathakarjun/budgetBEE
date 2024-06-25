@@ -31,7 +31,6 @@ import {
   DialogDescription,
   DialogTitle,
   DialogContent,
-  DialogFooter,
   DialogHeader,
 } from "../ui/dialog";
 import AddClassificationForm from "./AddClassificationForm";
