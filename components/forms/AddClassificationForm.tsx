@@ -19,9 +19,11 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import { Dispatch, SetStateAction } from "react";
 
 type propsType = {
   typeValue: String;
+  setDialogopen: Dispatch<SetStateAction<boolean>>;
 };
 
 const types = [
@@ -50,7 +52,6 @@ const AddClassificationForm = (props: propsType) => {
   const submitData = async (values: z.infer<typeof fromSchema>) => {
     const session = await fetch("/api/session");
     const sessionData = await session.json();
-    console.log(sessionData);
 
     const response = await fetch("/api/transactionClassifications", {
       method: "POST",
@@ -65,6 +66,7 @@ const AddClassificationForm = (props: propsType) => {
     const data = await response.json();
     if (response.ok) {
       toast.success(data.message);
+      props.setDialogopen(false);
     } else {
       toast.error(data.message);
     }

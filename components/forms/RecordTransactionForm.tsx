@@ -25,7 +25,7 @@ import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogDescription,
@@ -40,26 +40,51 @@ const types = [
   { label: "Expense", value: "ex" },
 ] as const;
 
-const classifications = [
-  { label: "Paycheck", value: "paycheck" },
-  { label: "Rent", value: "rent" },
-] as const;
-
 const fromSchema = z.object({
   description: z.string().min(1),
   type: z.string({
     required_error: "Please select a type.",
   }),
-  classification: z.string({
-    required_error: "Please select a classification.",
-  }),
+  classification: z
+    .union([z.string(), z.undefined()])
+    .refine((val) => val !== undefined && val !== "", {
+      message: "Please select a classification.",
+    }),
   amount: z.coerce.number().positive(),
 });
 
 const RecordTransactionForm = () => {
   const [typeopen, setTypeopen] = useState(false);
+  const [type, setType] = useState("");
   const [classificationopen, setCassificationopen] = useState(false);
   const [dialogopen, setDialogopen] = useState(false);
+  const [classifications, setCassifications] = useState<any[]>([]);
+
+  useEffect(() => {
+    const getClassifications = async () => {
+      const session = await fetch("/api/session");
+      const sessionData = await session.json();
+      const params = new URLSearchParams({
+        userId: sessionData?.user.id,
+        transactionType: type,
+      });
+      const response = await fetch(
+        `/api/transactionClassifications?${params.toString()}`,
+        {
+          method: "GET",
+        }
+      );
+      const classificationData = await response.json();
+      if (classificationData) {
+        const transformedData = classificationData.map((item: any) => ({
+          label: item.transaction_subtype,
+          value: item.transaction_subtype,
+        }));
+        setCassifications(transformedData);
+      }
+    };
+    getClassifications();
+  }, [type, dialogopen]);
 
   const form = useForm<z.infer<typeof fromSchema>>({
     resolver: zodResolver(fromSchema),
@@ -79,7 +104,10 @@ const RecordTransactionForm = () => {
             <DialogTitle>Add Classification</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          <AddClassificationForm typeValue={form.getValues("type")} />
+          <AddClassificationForm
+            typeValue={form.getValues("type")}
+            setDialogopen={setDialogopen}
+          />
         </DialogContent>
       </Dialog>
       <Form {...form}>
@@ -135,6 +163,8 @@ const RecordTransactionForm = () => {
                               onSelect={() => {
                                 form.setValue("type", type.value);
                                 setTypeopen(false);
+                                setType(type.label);
+                                form.setValue("classification", undefined);
                               }}
                             >
                               <Check
