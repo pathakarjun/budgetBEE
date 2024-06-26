@@ -24,16 +24,12 @@ import { Dispatch, SetStateAction } from "react";
 type propsType = {
   typeValue: String;
   setDialogopen: Dispatch<SetStateAction<boolean>>;
+  types: any;
 };
-
-const types = [
-  { label: "Income", value: "in" },
-  { label: "Expense", value: "ex" },
-] as const;
 
 const fromSchema = z.object({
   type: z.string({
-    required_error: "Please select a type.",
+    required_error: "Please select a type",
   }),
   classification: z.string().min(1).max(50),
 });
@@ -43,7 +39,7 @@ const AddClassificationForm = (props: propsType) => {
     resolver: zodResolver(fromSchema),
     defaultValues: {
       type: props.typeValue
-        ? types.find((type) => type.value === props.typeValue)?.label
+        ? props.types.find((type: any) => type.value === props.typeValue)?.label
         : "",
       classification: "",
     },
@@ -90,8 +86,9 @@ const AddClassificationForm = (props: propsType) => {
                     onValueChange={field.onChange}
                     defaultValue={
                       props.typeValue
-                        ? types.find((type) => type.value === props.typeValue)
-                            ?.label
+                        ? props.types.find(
+                            (type: any) => type.value === props.typeValue
+                          )?.label
                         : ""
                     }
                   >
@@ -99,7 +96,7 @@ const AddClassificationForm = (props: propsType) => {
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      {types.map((type) => (
+                      {props.types.map((type: any) => (
                         <SelectItem value={type.label} key={type.value}>
                           {type.label}
                         </SelectItem>
