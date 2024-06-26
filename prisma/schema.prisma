@@ -39,7 +39,7 @@ model transaction_classifications {
   user                users          @relation(fields: [user_id], references: [id])
   transaction         transactions[]
 
-  @@unique([user_id, transaction_type, transaction_subtype])
+  @@unique(fields: [user_id, transaction_type, transaction_subtype], name: "tnClassification_identifier")
 }
 
 model transactions {
@@ -47,6 +47,7 @@ model transactions {
   description                  String
   transaction_type             String
   transaction_subtype          String
+  transaction_date             DateTime
   amount                       Float
   user_id                      String
   transaction_classificationId String

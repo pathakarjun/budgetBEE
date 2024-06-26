@@ -2,8 +2,9 @@
 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
 import {
   Form,
   FormControl,
@@ -25,42 +26,72 @@ import { Input } from "../ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogDescription,
   DialogTitle,
   DialogContent,
-  DialogFooter,
   DialogHeader,
 } from "../ui/dialog";
 import AddClassificationForm from "./AddClassificationForm";
+import { Calendar } from "../ui/calendar";
+import { toast } from "sonner";
 
 const types = [
-  { label: "Income", value: "in" },
-  { label: "Expense", value: "ex" },
-] as const;
-
-const classifications = [
-  { label: "Paycheck", value: "paycheck" },
-  { label: "Rent", value: "rent" },
+  { label: "Income", value: "Income" },
+  { label: "Expense", value: "Expense" },
 ] as const;
 
 const fromSchema = z.object({
-  description: z.string().min(1),
+  description: z.string().min(1).max(200),
   type: z.string({
-    required_error: "Please select a type.",
+    required_error: "Please select a type",
   }),
-  classification: z.string({
-    required_error: "Please select a classification.",
+  classification: z
+    .union([z.string(), z.undefined()])
+    .refine((val) => val !== undefined && val !== "", {
+      message: "Please select a classification",
+    }),
+  transactionDate: z.date({
+    required_error: "A transaction date is required",
   }),
   amount: z.coerce.number().positive(),
 });
 
 const RecordTransactionForm = () => {
   const [typeopen, setTypeopen] = useState(false);
+  const [type, setType] = useState("");
   const [classificationopen, setCassificationopen] = useState(false);
   const [dialogopen, setDialogopen] = useState(false);
+  const [classifications, setCassifications] = useState<any[]>([]);
+  const [dateopen, setDateopen] = useState(false);
+
+  useEffect(() => {
+    const getClassifications = async () => {
+      const session = await fetch("/api/session");
+      const sessionData = await session.json();
+      const params = new URLSearchParams({
+        userId: sessionData?.user.id,
+        transactionType: type,
+      });
+      const response = await fetch(
+        `/api/transactionClassifications?${params.toString()}`,
+        {
+          method: "GET",
+        }
+      );
+      const classificationData = await response.json();
+      if (classificationData) {
+        const transformedData = classificationData.map((item: any) => ({
+          label: item.transaction_subtype,
+          value: item.transaction_subtype,
+        }));
+        setCassifications(transformedData);
+      }
+    };
+    getClassifications();
+  }, [type, dialogopen]);
 
   const form = useForm<z.infer<typeof fromSchema>>({
     resolver: zodResolver(fromSchema),
@@ -69,7 +100,33 @@ const RecordTransactionForm = () => {
     },
   });
 
-  const submitData = () => {};
+  const { trigger } = form;
+
+  const submitData = async (values: z.infer<typeof fromSchema>) => {
+    const session = await fetch("/api/session");
+    const sessionData = await session.json();
+
+    const response = await fetch("/api/transactions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: sessionData?.user.id,
+        description: values.description,
+        type: values.type,
+        classification: values.classification,
+        transactionDate: new Date(values.transactionDate),
+        amount: values.amount,
+      }),
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      toast.success(data.message);
+    } else {
+      toast.error(data.message);
+    }
+    form.reset();
+  };
 
   return (
     <div>
@@ -80,7 +137,11 @@ const RecordTransactionForm = () => {
             <DialogTitle>Add Classification</DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          <AddClassificationForm typeValue={form.getValues("type")} />
+          <AddClassificationForm
+            typeValue={form.getValues("type")}
+            setDialogopen={setDialogopen}
+            types={types}
+          />
         </DialogContent>
       </Dialog>
       <Form {...form}>
@@ -100,7 +161,6 @@ const RecordTransactionForm = () => {
               );
             }}
           />
-
           <FormField
             control={form.control}
             name="type"
@@ -136,6 +196,9 @@ const RecordTransactionForm = () => {
                               onSelect={() => {
                                 form.setValue("type", type.value);
                                 setTypeopen(false);
+                                setType(type.label);
+                                form.setValue("classification", undefined);
+                                trigger("type");
                               }}
                             >
                               <Check
@@ -158,7 +221,6 @@ const RecordTransactionForm = () => {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="classification"
@@ -203,6 +265,7 @@ const RecordTransactionForm = () => {
                                   classification.value
                                 );
                                 setCassificationopen(false);
+                                trigger("classification");
                               }}
                             >
                               <Check
@@ -233,7 +296,50 @@ const RecordTransactionForm = () => {
               </FormItem>
             )}
           />
-
+          <FormField
+            control={form.control}
+            name="transactionDate"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Transaction Date</FormLabel>
+                <Popover open={dateopen} onOpenChange={setDateopen}>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-[240px] pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pick a date</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={(e: any) => {
+                        field.onChange(e);
+                        setDateopen(false);
+                      }}
+                      disabled={(date: any) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="amount"
@@ -242,7 +348,12 @@ const RecordTransactionForm = () => {
                 <FormItem>
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <Input placeholder="Amount" type="number" {...field} />
+                    <Input
+                      placeholder="Amount"
+                      type="number"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
