@@ -19,7 +19,7 @@ export async function GET(req: any) {
 		const findTransactionClassification =
 			await db.transaction_classifications.findMany({
 				where: {
-					user_id: searchParam.get("userId") ?? undefined,
+					user_id: searchParam.get("userId") ?? "",
 					transaction_type: searchParam.get("transactionType") ?? undefined,
 				},
 			});
