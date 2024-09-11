@@ -4,7 +4,7 @@ import RecentTransactions from "@/components/RecentTransactions";
 import RecordTransactionForm from "@/components/forms/RecordTransactionForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { HandCoins, Wallet } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 
@@ -23,80 +23,59 @@ const page = () => {
 	}, []);
 
 	return (
-		<ScrollArea className="h-full">
-			<div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
-				<RecordTransactionForm userId={userId} />
-				<h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-					<Card>
-						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-sm font-medium">
-								Total Income
-							</CardTitle>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth="2"
-								className="h-4 w-4 text-muted-foreground"
-							>
-								<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-							</svg>
-						</CardHeader>
-						<CardContent>
-							<div className="text-2xl font-bold">$4,355.89</div>
-							<p className="text-xs text-muted-foreground">
-								+0% from last month
-							</p>
-						</CardContent>
-					</Card>
-					<Card>
-						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-sm font-medium">
-								Total Expense
-							</CardTitle>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth="2"
-								className="h-4 w-4 text-muted-foreground"
-							>
-								<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-							</svg>
-						</CardHeader>
-						<CardContent>
-							<div className="text-2xl font-bold">$2,145.46</div>
-							<p className="text-xs text-muted-foreground">
-								+0% from last month
-							</p>
-						</CardContent>
-					</Card>
+		<div className="w-full flex h-svh max-h-svh">
+			<div className="h-full flex-[0.25]"></div>
+
+			<ScrollArea className="h-full flex-1 bg-gray-100 w-full">
+				<div className="flex-1 space-y-4 p-14">
+					<h2 className="text-2xl font-medium tracking-tight">Overview</h2>
+					<div className="flex flex-row">
+						<div className="flex gap-8 flex-row pt-6">
+							<Card className="bg-inherit border-none shadow-none">
+								<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-0">
+									<CardTitle className="text-sm font-normal text-gray-700">
+										Income
+									</CardTitle>
+									<Wallet color="rgb(52 211 153)" size={14} />
+								</CardHeader>
+								<CardContent className="pl-0">
+									<div className="text-xl font-medium">$4,355.89</div>
+								</CardContent>
+							</Card>
+							<div className="inline-block h-[75px] min-h-[1em] w-0.5 bg-gray-200 self-center"></div>
+							<Card className="bg-inherit border-none shadow-none">
+								<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+									<CardTitle className="text-sm font-normal text-gray-700">
+										Expense
+									</CardTitle>
+									<HandCoins color="rgb(251 113 133)" size={14} />
+								</CardHeader>
+								<CardContent>
+									<div className="text-xl font-medium">$2,145.46</div>
+								</CardContent>
+							</Card>
+						</div>
+						<RecordTransactionForm userId={userId} />
+					</div>
+					<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
+						<Card className="col-span-4">
+							<CardHeader>
+								<CardTitle className="text-lg">Overview</CardTitle>
+							</CardHeader>
+							<CardContent className="pl-2"></CardContent>
+						</Card>
+						<Card className="col-span-4 md:col-span-3">
+							<CardHeader>
+								<CardTitle className="text-lg">Recent Transactions</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<RecentTransactions />
+							</CardContent>
+						</Card>
+					</div>
 				</div>
-				<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
-					<Card className="col-span-4">
-						<CardHeader>
-							<CardTitle className="text-lg">Overview</CardTitle>
-						</CardHeader>
-						<CardContent className="pl-2"></CardContent>
-					</Card>
-					<Card className="col-span-4 md:col-span-3">
-						<CardHeader>
-							<CardTitle className="text-lg">Recent Transactions</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<RecentTransactions />
-						</CardContent>
-					</Card>
-				</div>
-			</div>
-		</ScrollArea>
+			</ScrollArea>
+		</div>
 	);
 };
 
