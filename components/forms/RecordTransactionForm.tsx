@@ -132,7 +132,7 @@ const RecordTransactionForm = (props: propsType) => {
 	};
 
 	return (
-		<Card className="w-1/2">
+		<Card>
 			<CardHeader>
 				<CardTitle className="text-xl font-medium">Add Transactions</CardTitle>
 			</CardHeader>
