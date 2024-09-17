@@ -1,47 +1,59 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { format } from "date-fns";
+import { Transaction } from "@/types/types";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
 
-const RecentTransactions = () => {
-	const [transactionsData, setTransactionsData] = useState<any[]>([]);
+type RecentTransactionsProps = {
+  transactionsData: Transaction[];
+};
 
-	useEffect(() => {
-		const getTransactions = async () => {
-			const session = await fetch("/api/session");
-			const sessionData = await session.json();
-			const params = new URLSearchParams({
-				userId: sessionData?.user.id,
-			});
-			const response = await fetch(`/api/transactions?${params.toString()}`, {
-				method: "GET",
-			});
-			const responseData = await response.json();
+const RecentTransactions = ({ transactionsData }: RecentTransactionsProps) => {
+  const formatTransactionDate = (date: string | Date): string => {
+    const dateObj = new Date(date);
+    return format(dateObj, "dd MMM, yyyy");
+  };
 
-			if (responseData) {
-				const transformedData = responseData.map((item: any) => ({
-					type: item.transaction_type,
-					subType: item.transaction_subtype,
-					amount: item.amount,
-				}));
-				setTransactionsData(transformedData);
-			}
-		};
-		getTransactions();
-	}, []);
-
-	return (
-		<div className="space-y-8">
-			{transactionsData.map((data, index) => (
-				<div key={index} className="flex items-center">
-					<div className="ml-4 space-y-1">
-						<p className="text-sm font-medium leading-none">{data.subType}</p>
-						<p className="text-xs text-muted-foreground">{data.type}</p>
-					</div>
-					<div className="ml-auto font-medium">${data.amount}</div>
-				</div>
-			))}
-		</div>
-	);
+  return (
+    <div className="w-full h-96 overflow-y-auto">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Transaction</TableHead>
+            <TableHead>Description</TableHead>
+            <TableHead>Transaction Date</TableHead>
+            <TableHead className="text-right">Amount</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {transactionsData.map((data, index) => (
+            <TableRow key={index}>
+              <TableCell className="ml-4 space-y-1">
+                <p className="text-sm font-medium leading-none">
+                  {data.transaction_subtype}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {data.transaction_type}
+                </p>
+              </TableCell>
+              <TableCell>{data.description}</TableCell>
+              <TableCell>
+                {formatTransactionDate(data.transaction_date)}
+              </TableCell>
+              <TableCell className="text-right">$&nbsp;{data.amount}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
 };
 
 export default RecentTransactions;
