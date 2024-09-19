@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CalendarIcon, HandCoins, Wallet } from "lucide-react";
-import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Transaction } from "@/types/types";
@@ -143,98 +142,90 @@ const page = () => {
 	};
 
 	return (
-		<div className="w-full flex h-svh max-h-svh">
-			<div className="h-full flex-[0.25]"></div>
-
-			<ScrollArea className="h-full flex-1 bg-gray-100 w-full">
-				<div className="flex-1 space-y-4 p-10">
-					<div className="flex flex-row justify-between">
-						<h2 className="text-2xl font-medium tracking-tight">
-							Monthly Overview
-						</h2>
-						<Popover open={dateopen} onOpenChange={setDateopen}>
-							<PopoverTrigger asChild>
-								<Button
-									variant={"outline"}
-									className={cn(
-										"w-[140px] font-normal text-right",
-										!date && "text-muted-foreground"
-									)}
-								>
-									<CalendarIcon className="mr-4 h-4 w-4" />
-									{date ? format(date, "MMM, yyyy") : <span>Pick a month</span>}
-								</Button>
-							</PopoverTrigger>
-							<PopoverContent className="w-auto p-0">
-								<MonthPicker
-									// onMonthSelect={setDate}
-									onMonthSelect={(selectedDate) => {
-										setDate(selectedDate);
-										setDateopen(false);
-									}}
-									selectedMonth={date}
-								/>
-							</PopoverContent>
-						</Popover>
-					</div>
-					<div className="grid grid-cols-3 grid-rows-4 gap-4">
-						<div className="col-span-2">
-							<div className="flex flex-row">
-								<div className="flex gap-8 flex-row pt-5">
-									<Card className="bg-inherit border-none shadow-none">
-										<CardHeader className="flex flex-row items-center justify-between space-y-0 gap-10 pb-2 pl-0">
-											<CardTitle className="text-sm font-normal text-gray-700">
-												Income
-											</CardTitle>
-											<Wallet color="rgb(52 211 153)" size={14} />
-										</CardHeader>
-										<CardContent className="pl-0">
-											<div className="text-xl font-medium">
-												{formatCurrency(totalIncome)}
-											</div>
-										</CardContent>
-									</Card>
-									<div className="inline-block h-[75px] min-h-[1em] w-0.5 bg-gray-200 self-center"></div>
-									<Card className="bg-inherit border-none shadow-none">
-										<CardHeader className="flex flex-row items-center justify-between space-y-0 gap-10 pb-2">
-											<CardTitle className="text-sm font-normal text-gray-700">
-												Expenses
-											</CardTitle>
-											<HandCoins color="rgb(251 113 133)" size={14} />
-										</CardHeader>
-										<CardContent>
-											<div className="text-xl font-medium">
-												{formatCurrency(totalExpense)}
-											</div>
-										</CardContent>
-									</Card>
-								</div>
+		<ScrollArea className="h-full flex-1 w-full">
+			<div className="flex-1 space-y-4 p-10">
+				<div className="flex flex-row justify-between">
+					<h2 className="text-2xl font-medium tracking-tight">
+						Monthly Overview
+					</h2>
+					<Popover open={dateopen} onOpenChange={setDateopen}>
+						<PopoverTrigger asChild>
+							<Button
+								variant={"outline"}
+								className={cn(
+									"w-[140px] font-normal text-right",
+									!date && "text-muted-foreground"
+								)}
+							>
+								<CalendarIcon className="mr-4 h-4 w-4" />
+								{date ? format(date, "MMM, yyyy") : <span>Pick a month</span>}
+							</Button>
+						</PopoverTrigger>
+						<PopoverContent className="w-auto p-0" align="end">
+							<MonthPicker
+								onMonthSelect={(selectedDate) => {
+									setDate(selectedDate);
+									setDateopen(false);
+								}}
+								selectedMonth={date}
+							/>
+						</PopoverContent>
+					</Popover>
+				</div>
+				<div className="grid grid-cols-3 grid-rows-4 gap-4">
+					<div className="col-span-2">
+						<div className="flex flex-row">
+							<div className="flex gap-8 flex-row pt-5">
+								<Card className="bg-inherit border-none shadow-none">
+									<CardHeader className="flex flex-row items-center justify-between space-y-0 gap-10 pb-2 pl-0">
+										<CardTitle className="text-sm font-normal text-gray-700">
+											Income
+										</CardTitle>
+										<Wallet color="rgb(52 211 153)" size={14} />
+									</CardHeader>
+									<CardContent className="pl-0">
+										<div className="text-xl font-medium">
+											{formatCurrency(totalIncome)}
+										</div>
+									</CardContent>
+								</Card>
+								<div className="inline-block h-[75px] min-h-[1em] w-0.5 bg-gray-200 self-center"></div>
+								<Card className="bg-inherit border-none shadow-none">
+									<CardHeader className="flex flex-row items-center justify-between space-y-0 gap-10 pb-2">
+										<CardTitle className="text-sm font-normal text-gray-700">
+											Expenses
+										</CardTitle>
+										<HandCoins color="rgb(251 113 133)" size={14} />
+									</CardHeader>
+									<CardContent>
+										<div className="text-xl font-medium">
+											{formatCurrency(totalExpense)}
+										</div>
+									</CardContent>
+								</Card>
 							</div>
 						</div>
-						<div className="row-span-4 pt-5">
-							<RecordTransactionForm
-								userId={userId || ""}
-								onSuccess={handleFormSubmit}
-							/>
-						</div>
-						<div className="row-span-3 col-span-2 flex flex-col">
-							<DashboardExpenseChart
-								transactionsData={monthlyData}
-								date={date}
-							/>
-						</div>
 					</div>
-					<Card>
-						<CardHeader>
-							<CardTitle className="text-lg">Recent Transactions</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<RecentTransactions transactionsData={transactionsData} />
-						</CardContent>
-					</Card>
+					<div className="row-span-4 pt-5">
+						<RecordTransactionForm
+							userId={userId || ""}
+							onSuccess={handleFormSubmit}
+						/>
+					</div>
+					<div className="row-span-3 col-span-2 flex flex-col">
+						<DashboardExpenseChart transactionsData={monthlyData} date={date} />
+					</div>
 				</div>
-			</ScrollArea>
-		</div>
+				<Card>
+					<CardHeader>
+						<CardTitle className="text-lg">Recent Transactions</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<RecentTransactions transactionsData={transactionsData} />
+					</CardContent>
+				</Card>
+			</div>
+		</ScrollArea>
 	);
 };
 

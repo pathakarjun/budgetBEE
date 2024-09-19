@@ -128,8 +128,6 @@ const DashboardExpenseChart = ({
 	const { incomeChartData, incomeChartConfig } =
 		generateIncomeChartData(transactionsData);
 
-	console.log(incomeChartData);
-
 	return (
 		<div className="flex flex-row gap-4 h-full w-full">
 			<Card className="flex flex-col w-1/2">

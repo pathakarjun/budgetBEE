@@ -3,28 +3,29 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { getServerSession } from "next-auth";
+import Sidebar from "@/components/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "BudgetBee",
-  description: "Personal Finance Tool",
+	title: "BudgetBee",
+	description: "Personal Finance Tool",
 };
 
 export default async function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  const session = await getServerSession();
-  return (
-    <html lang="en">
-      <body className={inter.className}>
-        <main>
-          {children}
-          <Toaster richColors position="top-right" />
-        </main>
-      </body>
-    </html>
-  );
+	const session = await getServerSession();
+	return (
+		<html lang="en">
+			<body className={inter.className}>
+				<main>
+					{children}
+					<Toaster richColors position="top-right" />
+				</main>
+			</body>
+		</html>
+	);
 }
