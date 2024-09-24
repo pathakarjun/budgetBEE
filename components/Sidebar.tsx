@@ -34,12 +34,21 @@ const Sidebar = () => {
 	}, []);
 
 	return (
-		<aside className="w-[200px max-w-xs h-screen fixed left-0 top-0]">
+		<aside className="w-[220px h-screen fixed left-0 top-0]">
 			<div className="h-full px-4 py-4 flex flex-col justify-between">
-				<div className="h-1/4">
-					<Avatar className="h-16 w-16 mt-3 ml-4">
-						<AvatarFallback>CN</AvatarFallback>
+				<div className="h-1/4 flex flex-col w-full items-center mt-3 ml-4">
+					<Avatar className="h-16 w-16">
+						<AvatarFallback>
+							{firstName?.substring(0, 1)}
+							{lastName?.substring(0, 1)}
+						</AvatarFallback>
 					</Avatar>
+					<span className="mt-3 text-sm font-medium leading-none">
+						{firstName} {lastName}
+					</span>
+					<span className="mt-1 text-xs text-muted-foreground">
+						{userName && "@" + userName}
+					</span>
 				</div>
 				<div className="flex flex-col gap-1 w-full">
 					<Link href="/dashboard">
@@ -55,7 +64,7 @@ const Sidebar = () => {
 						<SidebarButton icon={Settings}>Settings</SidebarButton>
 					</Link>
 				</div>
-				<hr />
+				<hr className="ml-4" />
 				<SidebarButton icon={LogOut} onClick={() => signOut()} className="mb-5">
 					Log Out
 				</SidebarButton>
