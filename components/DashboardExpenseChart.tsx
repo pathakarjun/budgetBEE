@@ -102,7 +102,7 @@ const DashboardExpenseChart = ({
 
 		const incomeChartData: ChartDatum[] = Object.entries(groupedIncomes).map(
 			([subtype, total], index) => {
-				const color = generateUniqueColor(index);
+				const color = generateUniqueColor(index + 15);
 
 				incomeChartConfig[subtype] = {
 					label: subtype,
