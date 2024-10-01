@@ -11,7 +11,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CalendarIcon, HandCoins, Wallet } from "lucide-react";
+import { CalendarIcon, HandCoins, PiggyBank, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Transaction } from "@/types/types";
@@ -189,7 +189,7 @@ const page = () => {
 										<CardTitle className="text-sm font-normal text-gray-700">
 											Income
 										</CardTitle>
-										<Wallet color="rgb(52 211 153)" size={14} />
+										<Wallet color="rgb(74 222 128)" size={14} />
 									</CardHeader>
 									<CardContent className="pl-0">
 										<div className="text-xl font-medium">
@@ -203,11 +203,25 @@ const page = () => {
 										<CardTitle className="text-sm font-normal text-gray-700">
 											Expenses
 										</CardTitle>
-										<HandCoins color="rgb(251 113 133)" size={14} />
+										<HandCoins color="rgb(248 113 133)" size={14} />
 									</CardHeader>
 									<CardContent>
 										<div className="text-xl font-medium">
 											{formatCurrency(totalExpense)}
+										</div>
+									</CardContent>
+								</Card>
+								<div className="inline-block h-[75px] min-h-[1em] w-0.5 bg-gray-200 self-center"></div>
+								<Card className="bg-inherit border-none shadow-none">
+									<CardHeader className="flex flex-row items-center justify-between space-y-0 gap-10 pb-2">
+										<CardTitle className="text-sm font-normal text-gray-700">
+											Savings
+										</CardTitle>
+										<PiggyBank color="rgb(251 191 36)" size={14} />
+									</CardHeader>
+									<CardContent>
+										<div className="text-xl font-medium">
+											{formatCurrency(totalIncome - totalExpense)}
 										</div>
 									</CardContent>
 								</Card>
