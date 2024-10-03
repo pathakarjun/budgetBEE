@@ -31,8 +31,9 @@ const DashboardExpenseChart = ({
 	date,
 }: DashboardExpenseChartProps) => {
 	function generateUniqueColor(index: number): string {
-		const hue = (index * 137.508) % 360;
-		return `hsl(${hue}, 60%, 70%)`; // Return a pastel-like color
+		const goldenRatio = 0.61803398875;
+		const hue = (index * goldenRatio * 360) % 360;
+		return `hsl(${hue}, 70%, 60%)`;
 	}
 
 	function generateExpenseChartData(transactionsData: Transaction[]): {

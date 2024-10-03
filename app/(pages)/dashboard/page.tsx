@@ -2,14 +2,7 @@
 
 import RecentTransactions from "@/components/RecentTransactions";
 import RecordTransactionForm from "@/components/forms/RecordTransactionForm";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CalendarIcon, HandCoins, PiggyBank, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -25,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MonthPicker } from "@/components/Monthpicker";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const page = () => {
 	const [userId, setUserId] = useState<string | null>(null);
@@ -186,7 +180,7 @@ const page = () => {
 							<div className="flex gap-8 flex-row pt-5">
 								<Card className="bg-inherit border-none shadow-none">
 									<CardHeader className="flex flex-row items-center justify-between space-y-0 gap-10 pb-2 pl-0">
-										<CardTitle className="text-sm font-normal text-gray-700">
+										<CardTitle className="text-sm font-normal text-muted-foreground">
 											Income
 										</CardTitle>
 										<Wallet color="rgb(74 222 128)" size={14} />
@@ -197,10 +191,10 @@ const page = () => {
 										</div>
 									</CardContent>
 								</Card>
-								<div className="inline-block h-[75px] min-h-[1em] w-0.5 bg-gray-200 self-center"></div>
+								<div className="inline-block h-[75px] min-h-[1em] w-0.5 bg-muted-foreground self-center"></div>
 								<Card className="bg-inherit border-none shadow-none">
 									<CardHeader className="flex flex-row items-center justify-between space-y-0 gap-10 pb-2">
-										<CardTitle className="text-sm font-normal text-gray-700">
+										<CardTitle className="text-sm font-normal text-muted-foreground">
 											Expenses
 										</CardTitle>
 										<HandCoins color="rgb(248 113 133)" size={14} />
@@ -211,10 +205,10 @@ const page = () => {
 										</div>
 									</CardContent>
 								</Card>
-								<div className="inline-block h-[75px] min-h-[1em] w-0.5 bg-gray-200 self-center"></div>
+								<div className="inline-block h-[75px] min-h-[1em] w-0.5 bg-muted-foreground self-center"></div>
 								<Card className="bg-inherit border-none shadow-none">
 									<CardHeader className="flex flex-row items-center justify-between space-y-0 gap-10 pb-2">
-										<CardTitle className="text-sm font-normal text-gray-700">
+										<CardTitle className="text-sm font-normal text-muted-foreground">
 											Savings
 										</CardTitle>
 										<PiggyBank color="rgb(251 191 36)" size={14} />
@@ -240,7 +234,16 @@ const page = () => {
 				</div>
 				<Card>
 					<CardHeader>
-						<CardTitle className="text-lg">Recent Transactions</CardTitle>
+						<CardTitle>
+							<div className="flex justify-between">
+								<div className="text-lg">Recent Transactions</div>
+								<Link href="/transactions">
+									<Button variant="link" className="text-xs">
+										View all
+									</Button>
+								</Link>
+							</div>
+						</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<RecentTransactions transactionsData={transactionsData} />

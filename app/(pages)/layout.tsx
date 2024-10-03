@@ -8,7 +8,7 @@ export default function Layout({
 	return (
 		<>
 			<Sidebar />
-			<main className="ml-[220px] bg-gray-100 h-screen">{children}</main>
+			<main className="ml-[220px] h-screen border-l">{children}</main>
 		</>
 	);
 }

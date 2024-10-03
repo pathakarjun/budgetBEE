@@ -1,24 +1,19 @@
-import React from "react";
-import Image from "next/image";
-import UnderConstruction from "@/public/UnderConstruction.svg";
+import { getTransactions, getTransactionSubtype } from "@/app/_lib/queries";
+import { columns } from "@/components/transaction-table/columns";
+import { DataTable } from "@/components/transaction-table/data-table";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-const page = () => {
+export default async function page() {
+	const data = await getTransactions();
+	const categories = await getTransactionSubtype();
 	return (
-		<div className="flex flex-col">
-			<div className="flex justify-center p-20">
-				<Image
-					priority
-					src={UnderConstruction}
-					alt="Page Under Construction"
-					height={250}
-					width={250}
-				/>
+		<ScrollArea className="h-full flex-1 w-full">
+			<div className="flex-1 space-y-8 p-10">
+				<h2 className="text-2xl font-medium tracking-tight">
+					Transaction Records
+				</h2>
+				<DataTable columns={columns} data={data} categories={categories} />
 			</div>
-			<span className="text-center text-2xl font-semibold text-slate-400">
-				Page under Construction
-			</span>
-		</div>
+		</ScrollArea>
 	);
-};
-
-export default page;
+}
