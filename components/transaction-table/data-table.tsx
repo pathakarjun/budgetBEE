@@ -2,11 +2,14 @@
 
 import {
 	ColumnDef,
+	ColumnFiltersState,
 	SortingState,
 	flexRender,
 	getCoreRowModel,
+	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
+	getFacetedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
 
@@ -20,17 +23,26 @@ import {
 } from "@/components/ui/table";
 import { DataTablePagination } from "./data-table-pagination";
 import React from "react";
+import { DataTableToolbar } from "./data-table-toolbar";
+import { Categories } from "@/app/_lib/utilities";
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
+	categories: Categories[];
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
+	categories,
 }: DataTableProps<TData, TValue>) {
-	const [sorting, setSorting] = React.useState<SortingState>([]);
+	const [sorting, setSorting] = React.useState<SortingState>([
+		{ id: "transaction_date", desc: true },
+	]);
+	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+		[]
+	);
 
 	const table = useReactTable({
 		data,
@@ -39,18 +51,23 @@ export function DataTable<TData, TValue>({
 		getPaginationRowModel: getPaginationRowModel(),
 		onSortingChange: setSorting,
 		getSortedRowModel: getSortedRowModel(),
+		onColumnFiltersChange: setColumnFilters,
+		getFilteredRowModel: getFilteredRowModel(),
+		getFacetedRowModel: getFacetedRowModel(),
 		state: {
 			sorting,
+			columnFilters,
 		},
 	});
 
 	return (
 		<div className="space-y-4">
-			<div className="rounded-md border bg-white">
+			<DataTableToolbar table={table} categories={categories} />
+			<div className="rounded-md border">
 				<Table>
 					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
-							<TableRow key={headerGroup.id}>
+							<TableRow key={headerGroup.id} className="px-4 py-2">
 								{headerGroup.headers.map((header) => {
 									return (
 										<TableHead key={header.id}>
@@ -74,7 +91,7 @@ export function DataTable<TData, TValue>({
 									data-state={row.getIsSelected() && "selected"}
 								>
 									{row.getVisibleCells().map((cell) => (
-										<TableCell key={cell.id}>
+										<TableCell key={cell.id} className="px-4 py-2">
 											{flexRender(
 												cell.column.columnDef.cell,
 												cell.getContext()

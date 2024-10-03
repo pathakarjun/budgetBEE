@@ -20,6 +20,15 @@ export const columns: ColumnDef<transactions>[] = [
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Description" />
 		),
+		cell: ({ row }) => {
+			return (
+				<div className="flex space-x-2">
+					<span className="max-w-[500px] truncate font-medium capitalize">
+						{row.getValue("description")}
+					</span>
+				</div>
+			);
+		},
 		enableSorting: false,
 	},
 	{
@@ -27,12 +36,34 @@ export const columns: ColumnDef<transactions>[] = [
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Type" />
 		),
+		cell: ({ row }) => {
+			return (
+				<div className="flex w-[100px] items-center">
+					<span className="capitalize">{row.getValue("transaction_type")}</span>
+				</div>
+			);
+		},
+		filterFn: (row, id, value) => {
+			return value.includes(row.getValue(id));
+		},
 	},
 	{
 		accessorKey: "transaction_subtype",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Classification" />
 		),
+		cell: ({ row }) => {
+			return (
+				<div className="flex w-[100px] items-center">
+					<span className="capitalize">
+						{row.getValue("transaction_subtype")}
+					</span>
+				</div>
+			);
+		},
+		filterFn: (row, id, value) => {
+			return value.includes(row.getValue(id));
+		},
 	},
 	{
 		accessorKey: "transaction_date",
@@ -47,17 +78,17 @@ export const columns: ColumnDef<transactions>[] = [
 				year: "numeric",
 			});
 
-			return <div className="uppercase">{formattedDate}</div>;
+			return (
+				<div className="uppercase flex w-[100px] items-center">
+					{formattedDate}
+				</div>
+			);
 		},
 	},
 	{
 		accessorKey: "amount",
 		header: ({ column }) => (
-			<DataTableColumnHeader
-				column={column}
-				title="Amount"
-				className="justify-end"
-			/>
+			<DataTableColumnHeader column={column} title="Amount" />
 		),
 		cell: ({ row }) => {
 			const amount = parseFloat(row.getValue("amount"));
@@ -68,7 +99,11 @@ export const columns: ColumnDef<transactions>[] = [
 				.format(amount)
 				.replace("$", "$ ");
 
-			return <div className="text-right font-medium">{formatted}</div>;
+			return (
+				<div className="flex w-[100px] items-center">
+					<span className="capitalize">{formatted}</span>
+				</div>
+			);
 		},
 	},
 	{
