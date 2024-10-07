@@ -59,6 +59,12 @@ export function DataTableToolbar<TData>({
 						options={categories}
 					/>
 				)}
+				<CalendarDatePicker
+					date={dateRange}
+					onDateSelect={handleDateSelect}
+					className="h-9 w-auto"
+					variant="outline"
+				/>
 				{isFiltered && (
 					<Button
 						variant="ghost"
@@ -75,12 +81,6 @@ export function DataTableToolbar<TData>({
 						<XIcon className="ml-2 h-4 w-4" />
 					</Button>
 				)}
-				<CalendarDatePicker
-					date={dateRange}
-					onDateSelect={handleDateSelect}
-					className="h-9 w-auto"
-					variant="outline"
-				/>
 			</div>
 			<div className="flex items-center gap-2 ">
 				{table.getFilteredSelectedRowModel().rows.length > 0 ? (
