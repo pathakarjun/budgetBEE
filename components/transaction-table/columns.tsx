@@ -4,17 +4,40 @@ import { transactions } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "./data-table-column-header";
 
 export const columns: ColumnDef<transactions>[] = [
+	{
+		id: "select",
+		header: ({ table }) => (
+			<Checkbox
+				checked={
+					table.getIsAllPageRowsSelected() ||
+					(table.getIsSomePageRowsSelected() && "indeterminate")
+				}
+				onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+				aria-label="Select all"
+				className="translate-y-0.5"
+			/>
+		),
+		cell: ({ row }) => (
+			<Checkbox
+				checked={row.getIsSelected()}
+				onCheckedChange={(value) => row.toggleSelected(!!value)}
+				aria-label="Select row"
+				className="translate-y-0.5"
+			/>
+		),
+		enableSorting: false,
+		enableHiding: false,
+	},
 	{
 		accessorKey: "description",
 		header: ({ column }) => (
@@ -23,7 +46,7 @@ export const columns: ColumnDef<transactions>[] = [
 		cell: ({ row }) => {
 			return (
 				<div className="flex space-x-2">
-					<span className="max-w-[500px] truncate font-medium capitalize">
+					<span className="max-w-[250px] truncate font-medium capitalize">
 						{row.getValue("description")}
 					</span>
 				</div>
@@ -83,6 +106,11 @@ export const columns: ColumnDef<transactions>[] = [
 					{formattedDate}
 				</div>
 			);
+		},
+		filterFn: (row, id, value) => {
+			const rowDate = new Date(row.getValue(id));
+			const [startDate, endDate] = value;
+			return rowDate >= startDate && rowDate <= endDate;
 		},
 	},
 	{

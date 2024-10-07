@@ -43,6 +43,7 @@ export function DataTable<TData, TValue>({
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
 		[]
 	);
+	const [rowSelection, setRowSelection] = React.useState({});
 
 	const table = useReactTable({
 		data,
@@ -54,9 +55,11 @@ export function DataTable<TData, TValue>({
 		onColumnFiltersChange: setColumnFilters,
 		getFilteredRowModel: getFilteredRowModel(),
 		getFacetedRowModel: getFacetedRowModel(),
+		onRowSelectionChange: setRowSelection,
 		state: {
 			sorting,
 			columnFilters,
+			rowSelection,
 		},
 	});
 
