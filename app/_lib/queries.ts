@@ -39,3 +39,24 @@ export async function getTransactionSubtype(): Promise<Categories[]> {
 		},
 	];
 }
+
+export async function deleteTransactions(input: { ids: string[] }) {
+	try {
+		await db.transactions.deleteMany({
+			where: {
+				id: {
+					in: input.ids,
+				},
+			},
+		});
+		return {
+			data: null,
+			error: null,
+		};
+	} catch (err) {
+		return {
+			data: null,
+			error: err,
+		};
+	}
+}

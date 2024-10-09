@@ -12,8 +12,14 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "./data-table-column-header";
+import React from "react";
+import { DeleteTasksDialog } from "./delete-task-dialog";
 
-export const columns: ColumnDef<transactions>[] = [
+type OnDeleteSuccess = () => void;
+
+export const columns = (
+	onDeleteSuccess: OnDeleteSuccess
+): ColumnDef<transactions>[] => [
 	{
 		id: "select",
 		header: ({ table }) => (
@@ -137,21 +143,38 @@ export const columns: ColumnDef<transactions>[] = [
 	{
 		id: "actions",
 		cell: ({ row }) => {
-			const payment = row.original;
+			const [showDeleteTaskDialog, setShowDeleteTaskDialog] =
+				React.useState(false);
+
+			const handleDeleteSuccess = () => {
+				row.toggleSelected(false);
+				onDeleteSuccess?.();
+			};
 
 			return (
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="ghost" className="h-8 w-8 p-0">
-							<span className="sr-only">Open menu</span>
-							<MoreHorizontal className="h-4 w-4" />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						<DropdownMenuItem>Edit</DropdownMenuItem>
-						<DropdownMenuItem>Delete</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
+				<>
+					<DeleteTasksDialog
+						open={showDeleteTaskDialog}
+						onOpenChange={setShowDeleteTaskDialog}
+						transactions={[row.original]}
+						showTrigger={false}
+						onSuccess={handleDeleteSuccess}
+					/>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="ghost" className="h-8 w-8 p-0">
+								<span className="sr-only">Open menu</span>
+								<MoreHorizontal className="h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem>Edit</DropdownMenuItem>
+							<DropdownMenuItem onSelect={() => setShowDeleteTaskDialog(true)}>
+								Delete
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</>
 			);
 		},
 	},

@@ -1,20 +1,24 @@
 import { Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TrashIcon, XIcon } from "lucide-react";
+import { XIcon } from "lucide-react";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { Categories, types } from "@/app/_lib/utilities";
 import { useState } from "react";
 import { CalendarDatePicker } from "../date-range-picker";
+import { DeleteTasksDialog } from "./delete-task-dialog";
+import { transactions } from "@prisma/client";
 
-interface DataTableToolbarProps<TData> {
+interface DataTableToolbarProps<TData extends transactions> {
 	table: Table<TData>;
 	categories: Categories[];
+	onDeleteSuccess?: () => void;
 }
 
-export function DataTableToolbar<TData>({
+export function DataTableToolbar<TData extends transactions>({
 	table,
 	categories,
+	onDeleteSuccess,
 }: DataTableToolbarProps<TData>) {
 	const isFiltered = table.getState().columnFilters.length > 0;
 
@@ -84,10 +88,15 @@ export function DataTableToolbar<TData>({
 			</div>
 			<div className="flex items-center gap-2 ">
 				{table.getFilteredSelectedRowModel().rows.length > 0 ? (
-					<Button variant="outline" size="sm">
-						<TrashIcon className="mr-2 size-4" aria-hidden="true" />
-						Delete ({table.getFilteredSelectedRowModel().rows.length})
-					</Button>
+					<DeleteTasksDialog
+						transactions={table
+							.getFilteredSelectedRowModel()
+							.rows.map((row) => row.original)}
+						onSuccess={() => {
+							table.toggleAllRowsSelected(false);
+							onDeleteSuccess?.();
+						}}
+					/>
 				) : null}
 			</div>
 		</div>

@@ -25,17 +25,20 @@ import { DataTablePagination } from "./data-table-pagination";
 import React from "react";
 import { DataTableToolbar } from "./data-table-toolbar";
 import { Categories } from "@/app/_lib/utilities";
+import { transactions } from "@prisma/client";
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TData extends transactions, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
 	categories: Categories[];
+	onDeleteSuccess?: () => void;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends transactions, TValue>({
 	columns,
 	data,
 	categories,
+	onDeleteSuccess,
 }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = React.useState<SortingState>([
 		{ id: "transaction_date", desc: true },
@@ -65,7 +68,11 @@ export function DataTable<TData, TValue>({
 
 	return (
 		<div className="space-y-4">
-			<DataTableToolbar table={table} categories={categories} />
+			<DataTableToolbar
+				table={table}
+				categories={categories}
+				onDeleteSuccess={onDeleteSuccess}
+			/>
 			<div className="rounded-md border">
 				<Table>
 					<TableHeader>
