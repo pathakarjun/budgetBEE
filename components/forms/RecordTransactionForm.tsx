@@ -38,6 +38,7 @@ import AddClassificationForm from "./AddClassificationForm";
 import { Calendar } from "../ui/calendar";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FromSchema, fromSchema } from "@/app/_lib/validation";
 
 type propsType = {
 	userId: string;
@@ -48,22 +49,6 @@ const types = [
 	{ label: "Income", value: "Income" },
 	{ label: "Expense", value: "Expense" },
 ] as const;
-
-const fromSchema = z.object({
-	description: z.string().min(1).max(200),
-	type: z.string({
-		required_error: "Please select a type",
-	}),
-	classification: z
-		.union([z.string(), z.undefined()])
-		.refine((val) => val !== undefined && val !== "", {
-			message: "Please select a classification",
-		}),
-	transactionDate: z.date({
-		required_error: "A transaction date is required",
-	}),
-	amount: z.coerce.number().positive(),
-});
 
 const RecordTransactionForm = (props: propsType) => {
 	const [typeopen, setTypeopen] = useState(false);
@@ -97,7 +82,7 @@ const RecordTransactionForm = (props: propsType) => {
 		getClassifications();
 	}, [type, dialogopen]);
 
-	const form = useForm<z.infer<typeof fromSchema>>({
+	const form = useForm<FromSchema>({
 		resolver: zodResolver(fromSchema),
 		defaultValues: {
 			description: "",

@@ -30,7 +30,7 @@ export default function page() {
 		}
 	};
 
-	const handleDeleteSuccess = async () => {
+	const handleSuccess = async () => {
 		await fetchData();
 	};
 
@@ -46,10 +46,10 @@ export default function page() {
 					Transaction Records
 				</h2>
 				<DataTable
-					columns={columns(handleDeleteSuccess)}
+					columns={columns(handleSuccess, categories)}
 					data={data}
 					categories={categories}
-					onDeleteSuccess={handleDeleteSuccess}
+					onDeleteSuccess={handleSuccess}
 				/>
 			</div>
 		</ScrollArea>
