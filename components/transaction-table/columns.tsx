@@ -13,12 +13,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import React from "react";
-import { DeleteTasksDialog } from "./delete-task-dialog";
+import { DeleteTransactionDialog } from "./delete-transaction-dialog";
+import { UpdateTransactionSheet } from "./update-transaction-sheet";
+import { Categories } from "@/app/_lib/utilities";
 
-type OnDeleteSuccess = () => void;
+type OnSuccess = () => void;
 
 export const columns = (
-	onDeleteSuccess: OnDeleteSuccess
+	onSuccess: OnSuccess,
+	categories: Categories[]
 ): ColumnDef<transactions>[] => [
 	{
 		id: "select",
@@ -143,19 +146,28 @@ export const columns = (
 	{
 		id: "actions",
 		cell: ({ row }) => {
-			const [showDeleteTaskDialog, setShowDeleteTaskDialog] =
+			const [showDeleteTransactionDialog, setShowDeleteTransactionDialog] =
+				React.useState(false);
+			const [showUpdateTransactionSheet, setShowUpdateTransactionSheet] =
 				React.useState(false);
 
 			const handleDeleteSuccess = () => {
 				row.toggleSelected(false);
-				onDeleteSuccess?.();
+				onSuccess?.();
 			};
 
 			return (
 				<>
-					<DeleteTasksDialog
-						open={showDeleteTaskDialog}
-						onOpenChange={setShowDeleteTaskDialog}
+					<UpdateTransactionSheet
+						open={showUpdateTransactionSheet}
+						onOpenChange={setShowUpdateTransactionSheet}
+						transaction={row.original}
+						categories={categories}
+						onSuccess={onSuccess}
+					/>
+					<DeleteTransactionDialog
+						open={showDeleteTransactionDialog}
+						onOpenChange={setShowDeleteTransactionDialog}
 						transactions={[row.original]}
 						showTrigger={false}
 						onSuccess={handleDeleteSuccess}
@@ -168,8 +180,14 @@ export const columns = (
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
-							<DropdownMenuItem>Edit</DropdownMenuItem>
-							<DropdownMenuItem onSelect={() => setShowDeleteTaskDialog(true)}>
+							<DropdownMenuItem
+								onSelect={() => setShowUpdateTransactionSheet(true)}
+							>
+								Edit
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onSelect={() => setShowDeleteTransactionDialog(true)}
+							>
 								Delete
 							</DropdownMenuItem>
 						</DropdownMenuContent>

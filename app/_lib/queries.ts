@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { transactions } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { Categories } from "./utilities";
+import { FromSchema } from "./validation";
 
 export async function getTransactions(): Promise<transactions[]> {
 	const session = await getServerSession(authOptions);
@@ -47,6 +48,32 @@ export async function deleteTransactions(input: { ids: string[] }) {
 				id: {
 					in: input.ids,
 				},
+			},
+		});
+		return {
+			data: null,
+			error: null,
+		};
+	} catch (err) {
+		return {
+			data: null,
+			error: err,
+		};
+	}
+}
+
+export async function updateTransaction(input: FromSchema & { id: string }) {
+	try {
+		await db.transactions.update({
+			where: {
+				id: input.id,
+			},
+			data: {
+				description: input.description,
+				transaction_type: input.type,
+				transaction_subtype: input.classification,
+				transaction_date: input.transactionDate,
+				amount: input.amount,
 			},
 		});
 		return {

@@ -6,7 +6,7 @@ import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { Categories, types } from "@/app/_lib/utilities";
 import { useState } from "react";
 import { CalendarDatePicker } from "../date-range-picker";
-import { DeleteTasksDialog } from "./delete-task-dialog";
+import { DeleteTransactionDialog } from "./delete-transaction-dialog";
 import { transactions } from "@prisma/client";
 
 interface DataTableToolbarProps<TData extends transactions> {
@@ -88,7 +88,7 @@ export function DataTableToolbar<TData extends transactions>({
 			</div>
 			<div className="flex items-center gap-2 ">
 				{table.getFilteredSelectedRowModel().rows.length > 0 ? (
-					<DeleteTasksDialog
+					<DeleteTransactionDialog
 						transactions={table
 							.getFilteredSelectedRowModel()
 							.rows.map((row) => row.original)}

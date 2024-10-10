@@ -20,19 +20,19 @@ import { LoaderCircle, TrashIcon } from "lucide-react";
 import { toast } from "sonner";
 import { deleteTransactions } from "@/app/_lib/queries";
 
-interface DeleteTasksDialogProps
+interface DeleteTransactionDialogProps
 	extends React.ComponentPropsWithoutRef<typeof Dialog> {
 	transactions: Row<transactions>["original"][];
 	showTrigger?: boolean;
 	onSuccess?: () => void;
 }
 
-export function DeleteTasksDialog({
+export function DeleteTransactionDialog({
 	transactions,
 	showTrigger = true,
 	onSuccess,
 	...props
-}: DeleteTasksDialogProps) {
+}: DeleteTransactionDialogProps) {
 	const [isDeletePending, startDeleteTransition] = React.useTransition();
 	function onDelete() {
 		startDeleteTransition(async () => {
